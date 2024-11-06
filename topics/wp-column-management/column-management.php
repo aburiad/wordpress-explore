@@ -45,7 +45,7 @@ function custom_wordcount_orderby($query)
     }
 
     $orderby = $query->get('orderby');
-    
+
     if ('wordcount' == $orderby) {
         $query->set('meta_query', array(
             'relation' => 'OR',
