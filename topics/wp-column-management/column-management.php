@@ -62,3 +62,10 @@ function custom_wordcount_orderby($query)
 }
 
 add_action('pre_get_posts', 'custom_wordcount_orderby');
+
+function add_checkout_custom_message() {
+    echo '<div class="custom-checkout-message" style="padding: 10px; background-color: #f9f9f9; border: 1px solid #ddd; margin-bottom: 20px;">
+            <p><strong>আপনার অর্ডার সাবমিট করার আগে তথ্যগুলো ঠিকমত চেক করে নিন।</strong></p>
+          </div>';
+}
+add_action( 'woocommerce_before_checkout_form', 'add_checkout_custom_message' );

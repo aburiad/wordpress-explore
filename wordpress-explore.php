@@ -31,3 +31,36 @@ function plugin_load()
 }
 
 add_action('plugins_loaded', 'plugin_load');
+
+
+function admin_menus_callback()
+{
+    add_menu_page('Rest Api', 'Rest Api', 'manage_options', 'rest-api', 'my_rest_api', 'dashicons-book', 10);
+
+}
+
+add_action('admin_menu', 'admin_menus_callback');
+
+function my_rest_api()
+{
+    ?>
+    <div id="posts"></div>
+    <script>
+        const postsContainer = document.querySelector('#posts');
+        fetch('http://v.local/wp-json/wp/v2/posts/')
+            .then(response => response.json())
+            .then((data) => {
+                mydata(data);
+            })
+            .catch(error => console.error('Error:', error));
+
+        function mydata(data) {
+            data.forEach((data) => {
+                let title_tag = document.createElement('h2');
+                title_tag.innerText = data.title.rendered
+                postsContainer.append(title_tag)
+            })
+        }
+    </script>
+    <?php
+}
