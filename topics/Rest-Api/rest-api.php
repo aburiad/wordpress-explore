@@ -1,5 +1,26 @@
 <div id="posts"></div>
+
+<div id="filter-container">
+    <label for="category-select">Filter by Category:</label>
+    <select id="category-select">
+        <option value="">Select a Category</option>
+
+    </select>
+
+    <label for="tag-select">Filter by Tag:</label>
+    <select id="tag-select">
+        <option value="">Select a Tag</option>
+
+    </select>
+</div>
+
+<div id="posts-container">
+
+</div>
+
+
 <script>
+
     const postsContainer = document.querySelector('#posts');
     // fetch('http://v.local/wp-json/wp/v2/posts?per_page=3&orderBy=date&order=desc')
     fetch('http://v.local/wp-json/wp/v2/posts?per_page=3&orderBy=date&order=desc&author=1&categories=35')
@@ -16,4 +37,76 @@
             postsContainer.append(title_tag)
         })
     }
+
+    // from dropdown
+    document.addEventListener("DOMContentLoaded", function () {
+        const categorySelect = document.getElementById('category-select');
+        const tagSelect = document.getElementById('tag-select');
+        const postsContainer = document.getElementById('posts-container');
+
+        // category and tag dropdown
+        loadCategories();
+        loadTags();
+
+        // category tag load function
+        function loadCategories() {
+            fetch('http://v.local/wp-json/wp/v2/categories')
+                .then(response => response.json())
+                .then(categories => {
+                    categories.forEach(category => {
+                        const option = document.createElement('option');
+                        option.value = category.id;
+                        option.textContent = category.name;
+                        categorySelect.appendChild(option);
+                    });
+                });
+        }
+
+        function loadTags() {
+            fetch('http://v.local/wp-json/wp/v2/tags')
+                .then(response => response.json())
+                .then(tags => {
+                    tags.forEach(tag => {
+                        const option = document.createElement('option');
+                        option.value = tag.id;
+                        option.textContent = tag.name;
+                        tagSelect.appendChild(option);
+                    });
+                });
+        }
+
+        // dropdown event listener add
+        categorySelect.addEventListener('change', filterPosts);
+        tagSelect.addEventListener('change', filterPosts);
+
+        // filtered posts functin
+        function filterPosts() {
+            const categoryId = categorySelect.value;
+            const tagId = tagSelect.value;
+
+            // Query Parameters set
+            let url = 'http://v.local/wp-json/wp/v2/posts?';
+            if (categoryId) url += `categories=${categoryId}&`;
+            if (tagId) url += `tags=${tagId}&`;
+
+            // posts load
+            fetch(url)
+                .then(response => response.json())
+                .then(posts => {
+                    postsContainer.innerHTML = ''; // পুরোনো পোস্টগুলো মুছে ফেলা
+
+                    // filtered post show
+                    posts.forEach(post => {
+                        const postElement = document.createElement('div');
+                        postElement.innerHTML = `
+                        <h2>${post.title.rendered}</h2>
+                        <p>${post.excerpt.rendered}</p>
+                    `;
+                        postsContainer.appendChild(postElement);
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    });
+
 </script>
