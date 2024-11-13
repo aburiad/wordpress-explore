@@ -1,7 +1,8 @@
 <div id="posts"></div>
 <script>
     const postsContainer = document.querySelector('#posts');
-    fetch('http://v.local/wp-json/wp/v2/posts?per_page=3&orderBy=date&order=desc')
+    // fetch('http://v.local/wp-json/wp/v2/posts?per_page=3&orderBy=date&order=desc')
+    fetch('http://v.local/wp-json/wp/v2/posts?per_page=3&orderBy=date&order=desc&author=1&categories=35')
         .then(response => response.json())
         .then((data) => {
             mydata(data);
