@@ -20,6 +20,33 @@
 
 
 <script>
+    console.log(btoa('d:lsQgjMielNBJUsFPpwDGFIRi'));
+
+    const createPost = () => {
+        fetch('http://v.local/wp-json/wp/v2/posts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Basic ' + btoa('d:lsQgjMielNBJUsFPpwDGFIRi')
+            },
+            body: JSON.stringify({
+                title: 'test rest api',
+                content: 'test content',
+                status: 'publish'
+            })
+        })
+            .then(response => {
+                console.log('Response status:', response.status);  // This will show 401 or other HTTP status code
+                return response.json();
+            })
+            .then(data => console.log('Data:', data))
+            .catch(error => console.error('Error:', error));
+
+    };
+
+    
+    createPost();
+
 
     const postsContainer = document.querySelector('#posts');
     // fetch('http://v.local/wp-json/wp/v2/posts?per_page=3&orderBy=date&order=desc')
@@ -93,7 +120,7 @@
             fetch(url)
                 .then(response => response.json())
                 .then(posts => {
-                    postsContainer.innerHTML = ''; // পুরোনো পোস্টগুলো মুছে ফেলা
+                    postsContainer.innerHTML = ''; // old post removed
 
                     // filtered post show
                     posts.forEach(post => {
@@ -110,3 +137,22 @@
     });
 
 </script>
+
+<?php
+
+function wpe_get_endpoint_phrase()
+{
+    return ('Hello World, this is the WordPress REST API');
+}
+
+function wpe_register_example_routes()
+{
+    register_rest_route('hello-world/v1','test', array(
+        'methods' => 'GET',
+        'callback' => 'wpe_get_endpoint_phrase',
+    ));
+}
+
+add_action('rest_api_init', 'wpe_register_example_routes');
+
+?>
