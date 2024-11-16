@@ -42,3 +42,33 @@ function notify_on_publish( $post_id,$postObj ) {
     update_option( 'new_post_hook', array('info'=>$message,'obj'=>$postObj) );
 }
 add_action( 'publish_post', 'notify_on_publish',20,2 );
+
+
+
+
+// ফাংশন যা পোস্ট প্রকাশিত হলে ইমেল পাঠাবে
+function send_email_on_publish( $post_id ) {
+    // পোস্টের শিরোনাম এবং লেখকের তথ্য সংগ্রহ করা
+    $post_title = get_the_title( $post_id );
+    $author_id = get_post_field( 'post_author', $post_id );
+    $author_name = get_the_author_meta( 'display_name', $author_id );
+
+    // ইমেল রিসিপিয়েন্ট, বিষয় এবং বার্তা সেট করা
+    $to = 'farjanmalik12@gmail.com'; // আপনার ইমেল ঠিকানা
+    $subject = "নতুন পোস্ট প্রকাশিত হয়েছে: $post_title";
+    $message = "একটি নতুন পোস্ট প্রকাশিত হয়েছে:\n\n";
+    $message .= "পোস্টের শিরোনাম: $post_title\n";
+    $message .= "লেখক: $author_name\n";
+    $message .= "লিঙ্ক: " . get_permalink( $post_id );
+
+    // ইমেল পাঠানো
+    wp_mail( $to, $subject, $message );
+}
+add_action( 'publish_post', 'send_email_on_publish' );
+
+
+// filter
+function show_my_name_func($content){
+    return $content .= " Add New Name Ahsan ";
+}
+add_filter('show_my_name','show_my_name_func');

@@ -6,11 +6,9 @@ do_action( 'my_custom_action_footer');
 do_action('my_custom_title','Facebook','Hello Facebook');
 
 
-add_action('publish_post','publish_post_function');
-function publish_post_function($id,$postobj){
-    echo "helo";
-}
 
+$modifiedResults = apply_filters('show_my_name','riad');
+echo $modifiedResults;
 ?>
 
 
