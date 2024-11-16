@@ -1,4 +1,20 @@
-<div id="posts"></div>
+<?php
+
+do_action( 'my_custom_action');
+do_action( 'my_custom_action_body');
+do_action( 'my_custom_action_footer');
+do_action('my_custom_title','Facebook','Hello Facebook');
+
+
+add_action('publish_post','publish_post_function');
+function publish_post_function($id,$postobj){
+    echo "helo";
+}
+
+?>
+
+
+<!-- <div id="posts"></div>
 
 <div id="filter-container">
     <label for="category-select">Filter by Category:</label>
@@ -155,4 +171,5 @@ function wpe_register_example_routes()
 
 add_action('rest_api_init', 'wpe_register_example_routes');
 
-?>
+
+?> 
