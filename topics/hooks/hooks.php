@@ -54,7 +54,7 @@ function send_email_on_publish( $post_id ) {
     $author_name = get_the_author_meta( 'display_name', $author_id );
 
     // ইমেল রিসিপিয়েন্ট, বিষয় এবং বার্তা সেট করা
-    $to = 'farjanmalik12@gmail.com'; // আপনার ইমেল ঠিকানা
+    $to = 'test@gmail.com'; // আপনার ইমেল ঠিকানা
     $subject = "নতুন পোস্ট প্রকাশিত হয়েছে: $post_title";
     $message = "একটি নতুন পোস্ট প্রকাশিত হয়েছে:\n\n";
     $message .= "পোস্টের শিরোনাম: $post_title\n";
@@ -72,3 +72,45 @@ function show_my_name_func($content){
     return $content .= " Add New Name Ahsan ";
 }
 add_filter('show_my_name','show_my_name_func');
+
+
+// taxonomy 
+
+function create_custom_taxonomy() {
+    register_taxonomy(
+        'genre',  // Taxonomy নাম
+        'post',   // পোস্ট টাইপের নাম
+        array(
+            'label' => 'Genres',
+            'hierarchical' => true, // এটিকে হায়ারারকিক্যাল করতে পারে
+            'show_ui' => true,      // অ্যাডমিন প্যানেলে প্রদর্শিত হবে
+            'show_admin_column' => true, // পোস্ট তালিকাতে প্রদর্শন হবে
+            'query_var' => true,    // URL-এ এটি কুয়েরি করা যাবে
+            'rewrite' => array( 'slug' => 'genre' ), // URL-এর স্লাগ
+        )
+    );
+}
+add_action( 'init', 'create_custom_taxonomy' );
+
+
+
+// create meta boxes
+
+add_action('add_meta_boxes','add_meta_boxes_function');
+
+function add_meta_boxes_function(){
+    add_meta_box( 'author', "Author", 'author_meta_callback');
+}
+function author_meta_callback($post){
+    $authorname = get_post_meta( $post->ID, 'author', true );
+    ?>
+    <label for="author">Author</label>
+    <input type="text" name="author" value="<?php echo esc_attr($authorname)?>"/>
+    <?php
+}
+
+add_action('save_post','save_meta_author');
+
+function save_meta_author($postId){
+    update_post_meta( $postId, 'author', $_POST['author']);
+}
