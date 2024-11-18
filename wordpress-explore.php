@@ -35,12 +35,20 @@ add_action('plugins_loaded', 'plugin_load');
 
 function admin_menus_callback()
 {
-    add_menu_page('Rest Api', 'Rest Api', 'manage_options', 'rest-api', 'my_rest_api', 'dashicons-book', 10);
-
+    add_menu_page(
+        'Rest Api',
+        'Rest Api',
+        'manage_options',
+        'rest-api',
+        'my_rest_api',
+        'dashicons-book',
+        10
+    );
 }
 
 add_action('admin_menu', 'admin_menus_callback');
 
-function my_rest_api(){
+function my_rest_api()
+{
     require_once WP_MY_PLUGIN_DIR . 'topics/Rest-Api/rest-api.php';
 }
