@@ -28,6 +28,7 @@ function plugin_load()
 {
     require_once WP_MY_PLUGIN_DIR . 'topics/wp-column-management/column-management.php';
     require_once WP_MY_PLUGIN_DIR . 'topics/hooks/hooks.php';
+    require_once WP_MY_PLUGIN_DIR . 'topics/transient-api.php';
 }
 
 add_action('plugins_loaded', 'plugin_load');
