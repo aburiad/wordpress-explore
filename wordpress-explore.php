@@ -28,7 +28,6 @@ function plugin_load()
 {
     require_once WP_MY_PLUGIN_DIR . 'topics/wp-column-management/column-management.php';
     require_once WP_MY_PLUGIN_DIR . 'topics/hooks/hooks.php';
-    require_once WP_MY_PLUGIN_DIR . 'topics/transient-api.php';
 }
 
 add_action('plugins_loaded', 'plugin_load');
@@ -52,4 +51,22 @@ add_action('admin_menu', 'admin_menus_callback');
 function my_rest_api()
 {
     require_once WP_MY_PLUGIN_DIR . 'topics/Rest-Api/rest-api.php';
+}
+
+
+add_action('rest_api_init', function () {
+    register_rest_route('custom-rest', 'data', [
+        'methods' => 'GET',
+        'callback' => 'custom_rest_callback'
+    ]);
+});
+
+function custom_rest_callback()
+{
+    $data = [
+        'name' => "Riad",
+        'profession' => 'learner'
+    ];
+
+    return rest_ensure_response($data);
 }
