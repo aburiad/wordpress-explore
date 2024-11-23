@@ -158,3 +158,99 @@ $retrieved_data = unserialize(gzuncompress(get_transient('compressed_data')));
 
 
  */
+
+
+
+
+
+
+
+
+
+
+/*
+
+ উদাহরণ: API ডেটা আপডেট করা
+আপনার সাইটে আবহাওয়ার তথ্য (Weather Data) API থেকে নিয়ে ক্যাশিং করছেন। নতুন ডেটা প্রয়োজন হলে ডেটা আপডেট করতে হবে।
+
+function update_weather_data_transient() {
+    // পুরোনো ট্রান্সিয়েন্ট ডেটা মুছে ফেলুন।
+    delete_transient( 'weather_data' );
+
+    // API থেকে নতুন ডেটা সংগ্রহ করুন।
+    $response = wp_remote_get( 'https://api.example.com/weather' );
+
+    if ( is_wp_error( $response ) ) {
+        return 'Could not fetch weather data.';
+    }
+
+    $weather_data = wp_remote_retrieve_body( $response );
+
+    // নতুন ডেটা ১ ঘণ্টার জন্য ট্রান্সিয়েন্টে সেভ করুন।
+    set_transient( 'weather_data', $weather_data, HOUR_IN_SECONDS );
+
+    return $weather_data;
+}
+
+
+
+
+function display_weather_data() {
+    // প্রথমে ট্রান্সিয়েন্ট থেকে ডেটা চেক করুন।
+    $weather = get_transient( 'weather_data' );
+
+    if ( false === $weather ) {
+        // যদি ডেটা না থাকে বা মুছে ফেলা হয়, নতুন ডেটা আনুন।
+        $weather = update_weather_data_transient();
+    }
+
+    echo 'Current Weather: ' . $weather;
+}
+
+// Shortcode দিয়ে পেজে দেখানোর জন্য।
+add_shortcode( 'show_weather', 'display_weather_data' );
+
+
+*/
+
+
+
+
+/*
+// real example with transient wp query 
+
+// using transient api 
+
+$transient_key = 'all_posts_data';
+
+// প্রথমে ট্রান্সিয়েন্ট থেকে ডেটা চেক করুন।
+$posts_data = get_transient($transient_key);
+
+if (false === $posts_data) {
+    // ট্রান্সিয়েন্টে ডেটা না থাকলে, নতুন ডেটা সংগ্রহ করুন।
+    $condition = array(
+        'post_type'      => 'post',
+        'posts_per_page' => -1,
+    );
+    $query = new WP_Query($condition);
+
+    if ($query->have_posts()) {
+        $posts_data = ''; // পোস্ট ডেটা জমা রাখার জন্য ভ্যারিয়েবল।
+
+        while ($query->have_posts()) {
+            $query->the_post();
+            $posts_data .= get_the_title() . "<br>"; // পোস্টের শিরোনাম জমা।
+        }
+
+        // নতুন ডেটা ট্রান্সিয়েন্টে সেভ করুন (১ ঘণ্টার জন্য)।
+        set_transient($transient_key, $posts_data, HOUR_IN_SECONDS);
+
+        // রিসেট পোস্ট ডেটা।
+        wp_reset_postdata();
+    } else {
+        $posts_data = "No post found";
+    }
+}
+
+
+*/
