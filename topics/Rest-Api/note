@@ -15,3 +15,61 @@ author: নির্দিষ্ট লেখকের পোস্ট দেখ
 
 search: নির্দিষ্ট শব্দ অনুসারে পোস্ট খুঁজতে।
 উদাহরণ: ?search=tech (যে পোস্টগুলোতে "tech" শব্দ আছে)
+
+
+post type add rest api
+
+add_action('init', 'post_type_register');
+function post_type_register()
+{
+   $siteId = get_current_blog_id();
+   if (2 == $siteId) {
+      register_post_type('book', array(
+         'labels' => array(
+            'name'          => 'Books',
+            'singular_name' => 'Book',
+         ),
+         'supports'      => array('title', 'editor', 'custom-fields'), // supports should be an array
+         'public'        => true,
+         'has_archive'   => true,
+         'show_in_rest'  => true, // Enable REST API for this post type
+         'rest_base'     => 'books', // Custom REST API base
+      ));
+   }
+}
+
+
+
+; js call rest api 
+
+const post = document.getElementById('post');
+const textarea = document.getElementById( 'bookstore-booklist' );
+if(post){
+   post.addEventListener('click',function(){
+      wp.apiFetch({path: 'wp/v2/books'})
+      .then(books=>{
+         books.map( ( book ) => {
+            textarea.value += book.title.rendered + ',\n'
+        });
+      })
+      // wp.apiFetch( {
+      //    path: '/wp/v2/books/',
+      //    method: 'POST',
+      //    data: {
+      //        title: 'New Book Title',
+      //        content: 'New Book Content',
+      //        status: 'publish'
+      //    },
+      // } ).then( (response) => {
+      //    console.log('Book Created!');
+      // } );
+   })
+}
+
+
+
+
+
+
+
+
