@@ -221,36 +221,39 @@ add_shortcode( 'show_weather', 'display_weather_data' );
 
 // using transient api 
 
-$transient_key = 'all_posts_data';
+   $transient_key = 'all_posts_data';
 
-// প্রথমে ট্রান্সিয়েন্ট থেকে ডেটা চেক করুন।
-$posts_data = get_transient($transient_key);
+   // প্রথমে ট্রান্সিয়েন্ট থেকে ডেটা চেক করুন।
+   $posts_data = get_transient($transient_key);
 
-if (false === $posts_data) {
-    // ট্রান্সিয়েন্টে ডেটা না থাকলে, নতুন ডেটা সংগ্রহ করুন।
-    $condition = array(
-        'post_type'      => 'post',
-        'posts_per_page' => -1,
-    );
-    $query = new WP_Query($condition);
+   if (false === $posts_data) {
+      // ট্রান্সিয়েন্টে ডেটা না থাকলে, নতুন ডেটা সংগ্রহ করুন।
+      $condition = array(
+         'post_type'      => 'post',
+         'posts_per_page' => -1,
+      );
+      $query = new WP_Query($condition);
 
-    if ($query->have_posts()) {
-        $posts_data = ''; // পোস্ট ডেটা জমা রাখার জন্য ভ্যারিয়েবল।
+      if ($query->have_posts()) {
+         $posts_data = ''; // পোস্ট ডেটা জমা রাখার জন্য ভ্যারিয়েবল।
 
-        while ($query->have_posts()) {
+         while ($query->have_posts()) {
             $query->the_post();
             $posts_data .= get_the_title() . "<br>"; // পোস্টের শিরোনাম জমা।
-        }
+         }
 
-        // নতুন ডেটা ট্রান্সিয়েন্টে সেভ করুন (১ ঘণ্টার জন্য)।
-        set_transient($transient_key, $posts_data, HOUR_IN_SECONDS);
+         // নতুন ডেটা ট্রান্সিয়েন্টে সেভ করুন (১ ঘণ্টার জন্য)।
+         set_transient($transient_key, $posts_data, HOUR_IN_SECONDS);
 
-        // রিসেট পোস্ট ডেটা।
-        wp_reset_postdata();
-    } else {
-        $posts_data = "No post found";
-    }
-}
+         // রিসেট পোস্ট ডেটা।
+         wp_reset_postdata();
+      } else {
+         $posts_data = "No post found";
+      }
+   }
+
+   // শেষ ধাপে ট্রান্সিয়েন্ট বা ডাটাবেজ থেকে ডেটা দেখান।
+   echo $posts_data;
 
 
 */
