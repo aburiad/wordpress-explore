@@ -39,6 +39,19 @@ function post_type_register()
 }
 
 
+pass js
+
+
+add_action('admin_enqueue_scripts', 'scripts_loaded');
+function scripts_loaded()
+{
+   wp_enqueue_script('rest-handle', plugin_dir_url(__FILE__) . 'js/rest.js', array('wp-api', 'wp-api-fetch'), '1.0', true);
+
+   $data = array(
+      'ajax_url' => admin_url('admin-ajax'),
+   );
+   wp_localize_script('rest-handle', 'data', $data);
+}
 
 ; js call rest api 
 

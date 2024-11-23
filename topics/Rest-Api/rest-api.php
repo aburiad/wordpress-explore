@@ -1,13 +1,13 @@
 <?php
 
-do_action( 'my_custom_action');
-do_action( 'my_custom_action_body');
-do_action( 'my_custom_action_footer');
-do_action('my_custom_title','Facebook','Hello Facebook');
+do_action('my_custom_action');
+do_action('my_custom_action_body');
+do_action('my_custom_action_footer');
+do_action('my_custom_title', 'Facebook', 'Hello Facebook');
 
 
 
-$modifiedResults = apply_filters('show_my_name','riad');
+$modifiedResults = apply_filters('show_my_name', 'riad');
 echo $modifiedResults;
 ?>
 
@@ -161,7 +161,7 @@ function wpe_get_endpoint_phrase()
 
 function wpe_register_example_routes()
 {
-    register_rest_route('hello-world/v1','test', array(
+    register_rest_route('hello-world/v1', 'test', array(
         'methods' => 'GET',
         'callback' => 'wpe_get_endpoint_phrase',
     ));
