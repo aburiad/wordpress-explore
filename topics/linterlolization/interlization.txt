@@ -1,0 +1,69 @@
+<?php
+/*
+plugin name: Rest API Learn
+Text Domain: rest-api
+Domain Path: /languages
+*/
+
+// load textdomain
+
+function my_example_plugin_load_textdomain()
+{
+   load_plugin_textdomain('rest-api', false, dirname(plugin_basename(__FILE__)) . '/languages/');
+}
+add_action('plugins_loaded', 'my_example_plugin_load_textdomain');
+
+
+
+
+// translate text
+
+add_action('init', 'hello_msg');
+function hello_msg()
+{
+   esc_html_e('Hello world From Rest Api Plugin', 'rest-api');
+   esc_html_e('Hello I am working this plugi', 'rest-api');
+}
+
+
+
+
+
+
+suggest 
+
+
+ধাপ ২: অনুবাদযোগ্য টেক্সট লিখুন
+WordPress-এর i18n ফাংশন ব্যবহার করুন:
+
+__() – একটি স্ট্রিং রিটার্ন করবে।
+_e() – একটি স্ট্রিং ইকো করবে।
+_x() – একই টেক্সটের বিভিন্ন প্রসঙ্গের জন্য ব্যবহার হয়।
+esc_html__() এবং esc_html_e() – HTML এড়ানোর জন্য।
+
+
+
+উদাহরণ:
+php
+Copy code
+// শুধু রিটার্ন
+$title = __('Hello, World!', 'my-example-plugin');
+
+// ইকো করবে
+_e('Welcome to my plugin!', 'my-example-plugin');
+
+// প্রসঙ্গ সহ
+$label = _x('Post', 'label for posts', 'my-example-plugin');
+
+// HTML সুরক্ষিত করে ইকো
+esc_html_e('This is a secure text.', 'my-example-plugin');
+
+
+
+// update 
+
+
+when added some text after save po,mo file again use command
+$-> wp i18n make-pot . languages/rest-api.pot
+when save po,mo file ensure filename as same as text domain like
+filename : rest-api-bn_BD.mo
