@@ -1,0 +1,100 @@
+Step 1: wp-config.php ফাইলে Multisite চালু করা
+Multisite এনাবল করার জন্য, wp-config.php ফাইলটি ওপেন করে নিচের কোড যোগ করুন:
+define( 'WP_ALLOW_MULTISITE', true );
+
+
+
+Step 2: Multisite নেটওয়ার্ক সেটআপ করা
+ড্যাশবোর্ডে লগইন করুন।
+
+Tools > Network Setup-এ যান।
+এখানে দুটি অপশন পাবেন:
+
+সাবডোমেন (subdomain, যেমন site1.example.com)
+সাবডিরেক্টরি (subdirectory, যেমন example.com/site1)
+নিজের প্রয়োজন অনুযায়ী একটি নির্বাচন করুন।
+প্রয়োজনীয় তথ্য দিয়ে "Install" বাটনে ক্লিক করুন।
+
+
+
+Step 3: wp-config.php এবং .htaccess ফাইল আপডেট
+আপনাকে নির্দেশনা দেওয়া হবে wp-config.php এবং .htaccess ফাইল আপডেট করার জন্য। নিচের মতো কোড কপি করে যথাস্থানে পেস্ট করুন:
+
+wp-config.php:
+
+php
+Copy code
+define( 'MULTISITE', true );
+define( 'SUBDOMAIN_INSTALL', false );
+define( 'DOMAIN_CURRENT_SITE', 'example.com' );
+define( 'PATH_CURRENT_SITE', '/' );
+define( 'SITE_ID_CURRENT_SITE', 1 );
+define( 'BLOG_ID_CURRENT_SITE', 1 );
+
+
+
+.htaccess:
+
+apache
+Copy code
+RewriteEngine On
+RewriteBase /
+RewriteRule ^index\.php$ - [L]
+
+# Add rewrite rules for WordPress Multisite
+RewriteRule ^([_0-9a-zA-Z-]+/)?wp-admin$ $1wp-admin/ [R=301,L]
+
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+RewriteRule ^([_0-9a-zA-Z-]+/)?(wp-(content|admin|includes).*) $2 [L]
+RewriteRule ^([_0-9a-zA-Z-]+/)?(.*\.php)$ $2 [L]
+RewriteRule . index.php [L]
+সেভ করুন এবং সার্ভারে আপলোড করুন
+
+
+
+
+সাইট তৈরি করার জন্য কোড:
+php
+Copy code
+$new_site = array(
+    'domain'  => 'subdomain.example.com',
+    'path'    => '/',
+    'title'   => 'নতুন সাইটের নাম',
+    'user_id' => 1,
+);
+$site_id = wpmu_create_blog( $new_site['domain'], $new_site['path'], $new_site['title'], $new_site['user_id'] );
+if ( is_wp_error( $site_id ) ) {
+    echo 'সাইট তৈরি করতে সমস্যা হয়েছে।';
+} else {
+    echo 'সাইট সফলভাবে তৈরি হয়েছে। সাইট ID: ' . $site_id;
+}
+
+
+সাইট মুছে ফেলার জন্য কোড:
+php
+Copy code
+$site_id = 2; // মুছে ফেলতে চাওয়া সাইটের ID
+wpmu_delete_blog( $site_id, true ); // true মানে ডিলিটের পর ডেটা সম্পূর্ণ মুছে ফেলবে
+
+
+
+ধাপ ৩: কোডের মাধ্যমে কেবল নির্দিষ্ট সাইটে প্লাগিন চালানো
+আপনার প্লাগিনের কোডে is_main_site() বা সাইট আইডি চেক করার মাধ্যমে নির্দিষ্ট সাইটে কার্যকরী ফাংশনগুলো চালাতে পারেন। উদাহরণ:
+
+php
+Copy code
+add_action( 'init', 'run_plugin_for_specific_site' );
+
+function run_plugin_for_specific_site() {
+    // সাইটের ID চেক করুন
+    if ( get_current_blog_id() !== 2 ) { // 2 এখানে নির্দিষ্ট সাইটের ID
+        return; // অন্যান্য সাইটে কিছুই চালাবে না
+    }
+    
+    // প্লাগিনের বাকি কার্যক্রম এখানে থাকবে
+    add_action( 'wp_footer', function() {
+        echo '<p>This is only visible on site ID 2.</p>';
+    });
+}
