@@ -70,3 +70,40 @@ function custom_rest_callback()
 
     return rest_ensure_response($data);
 }
+
+
+
+add_shortcode('student', 'wpe_student_msg');
+function wpe_student_msg($atts)
+{
+    shortcode_atts(array(
+        'name' => 'name',
+        'email' => 'email'
+    ), $atts, 'student');
+    var_dump($atts);
+    return ("<h2>Name is : {$atts['name']} Email: {$atts['email']}</h2>");
+}
+
+
+
+
+add_shortcode('post', 'wpe_post_data');
+
+function wpe_post_data()
+{
+    global $wpdb;
+
+    // get database post what publish and post type post 
+
+    $table_prefix = $wpdb->prefix;
+    $table_name = $table_prefix . "posts";
+    $posts = $wpdb->get_results("SELECT post_title FROM {$table_name} WHERE post_type = 'post' AND post_status = 'publish'");
+
+    if (count($posts) > 0) {
+        echo "<ul>";
+        foreach ($posts as $post) {
+            echo "<li>.$post->post_title.</li>";
+        }
+        echo "</ul>";
+    }
+}
